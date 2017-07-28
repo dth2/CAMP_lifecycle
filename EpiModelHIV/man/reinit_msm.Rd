@@ -27,4 +27,3 @@ This function reinitializes an epidemic model to restart at a
 }
 \keyword{module}
 \keyword{msm}
-

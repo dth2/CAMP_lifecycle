@@ -101,4 +101,3 @@ Sets the controls for stochastic network models simulated with
              \code{\link{netsim}}.
 }
 \keyword{msm}
-

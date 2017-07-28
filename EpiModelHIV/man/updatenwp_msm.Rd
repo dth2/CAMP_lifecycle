@@ -18,4 +18,3 @@ Updates the internal data structure containing the main data
 }
 \keyword{module}
 \keyword{msm}
-
