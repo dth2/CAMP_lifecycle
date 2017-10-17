@@ -4,7 +4,7 @@
 #' @description Module function stochastically simulates potential condom use
 #'              for each act on the discordant edgelist.
 #'
-#' @inheritParams aging_msm
+#' @inheritParams aging_camplc
 #'
 #' @details
 #' For each act on the discordant edgelist, condom use is stochastically simulated
@@ -22,7 +22,7 @@
 #'
 condoms_msm <- function(dat, at) {
 
-  for (type in c("main", "pers", "inst")) {
+  for (type in c("main", "pers", "asmm", "inst")) {
 
     ## Variables ##
 
@@ -54,6 +54,15 @@ condoms_msm <- function(dat, at) {
       cond.always <- dat$attr$cond.always.pers
       ptype <- 2
     }
+    if (type == "asmm") {
+      cond.BB.prob <- dat$param$cond.asmm.BB.prob
+      cond.BW.prob <- dat$param$cond.asmm.BW.prob
+      cond.WW.prob <- dat$param$cond.asmm.WW.prob
+      diag.beta <- dat$param$cond.diag.asmm.beta
+      discl.beta <- dat$param$cond.discl.asmm.beta
+      cond.always <- dat$attr$cond.always.asmm
+      ptype <- 3
+    }
     if (type == "inst") {
       cond.BB.prob <- dat$param$cond.inst.BB.prob
       cond.BW.prob <- dat$param$cond.inst.BW.prob
@@ -61,7 +70,7 @@ condoms_msm <- function(dat, at) {
       diag.beta <- dat$param$cond.diag.inst.beta
       discl.beta <- dat$param$cond.discl.inst.beta
       cond.always <- dat$attr$cond.always.inst
-      ptype <- 3
+      ptype <- 4
     }
 
     el <- dat$temp$el
