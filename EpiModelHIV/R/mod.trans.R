@@ -6,7 +6,7 @@
 #' @description Stochastically simulates disease transmission given the current
 #'              state of the discordand edgelist.
 #'
-#' @inheritParams aging_msm
+#' @inheritParams aging_camplc
 #'
 #' @details
 #' This is the final substantive function that occurs within the time loop at
