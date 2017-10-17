@@ -3,7 +3,7 @@
 #'
 #' @description Module function for HIV diagnostic testing of infected persons.
 #'
-#' @inheritParams aging_msm
+#' @inheritParams aging_camplc
 #'
 #' @details
 #' This testing module supports two testing parameterizations, input via the
@@ -30,6 +30,7 @@ test_msm <- function(dat, at) {
   tt.traj <- dat$attr$tt.traj
   status <- dat$attr$status
   inf.time <- dat$attr$inf.time
+  asmm<- dat$attr$asmm
 
   prepStat <- dat$attr$prepStat
   prep.tst.int <- dat$param$prep.tst.int
@@ -38,54 +39,95 @@ test_msm <- function(dat, at) {
   testing.pattern <- dat$param$testing.pattern
   mean.test.B.int <- dat$param$mean.test.B.int
   mean.test.W.int <- dat$param$mean.test.W.int
+  mean.test.B.int.asmm <- dat$param$mean.test.B.int.asmm
+  mean.test.W.int.asmm <- dat$param$mean.test.W.int.asmm
   twind.int <- dat$param$test.window.int
 
   ## Process
 
   if (testing.pattern == "memoryless") {
-    elig.B <- which(active == 1 & race == "B" & tt.traj != "NN" &
+    elig.B.msm <- which(active == 1 & race == "B" & asmm == 0 & tt.traj != "NN" &
                       (diag.status == 0 | is.na(diag.status)))
-    rates.B <- rep(1/mean.test.B.int, length(elig.B))
-    rates.B[which(prepStat[elig.B] == 1)] <- 1/prep.tst.int
-    tst.B <- elig.B[rbinom(length(elig.B), 1, rates.B) == 1]
+    rates.B.msm <- rep(1/mean.test.B.int, length(elig.B.msm))
+    rates.B.msm[which(prepStat[elig.B.msm] == 1)] <- 1/prep.tst.int
+    tst.B.msm <- elig.B.msm[rbinom(length(elig.B.msm), 1, rates.B.msm) == 1]
 
-    elig.W <- which(active == 1 & race == "W" & tt.traj != "NN" &
+    elig.W.msm <- which(active == 1 & race == "W" & asmm == 0 & tt.traj != "NN" &
                       (diag.status == 0 | is.na(diag.status)))
-    rates.W <- rep(1/mean.test.W.int, length(elig.W))
-    rates.W[which(prepStat[elig.W] == 1)] <- 1/prep.tst.int
-    tst.W <- elig.W[rbinom(length(elig.W), 1, rates.W) == 1]
+    rates.W.msm <- rep(1/mean.test.W.int, length(elig.W.msm))
+    rates.W.msm[which(prepStat[elig.W.msm] == 1)] <- 1/prep.tst.int
+    tst.W.msm <- elig.W.msm[rbinom(length(elig.W.msm), 1, rates.W.msm) == 1]
+    
+    
+    elig.B.asmm <- which(active == 1 & race == "B" & asmm == 1 & tt.traj != "NN" &
+                      (diag.status == 0 | is.na(diag.status)))
+    rates.B.asmm <- rep(1/mean.test.B.int.asmm, length(elig.B.asmm))
+    rates.B.asmm[which(prepStat[elig.B.asmm] == 1)] <- 1/prep.tst.int
+    tst.B.asmm <- elig.B.asmm[rbinom(length(elig.B.asmm), 1, rates.B.asmm) == 1]
+    
+    elig.W.asmm <- which(active == 1 & race == "W" & asmm == 0 & tt.traj != "NN" &
+                      (diag.status == 0 | is.na(diag.status)))
+    rates.W.asmm <- rep(1/mean.test.W.int.asmm, length(elig.W.asmm))
+    rates.W.asmm[which(prepStat[elig.W.asmm] == 1)] <- 1/prep.tst.int
+    tst.W.asmm <- elig.W.asmm[rbinom(length(elig.W.asmm), 1, rates.W.asmm) == 1]
   }
 
   if (testing.pattern == "interval") {
-    # Time since last neg test
+    # Time since last neg test MSM
     tsincelntst <- at - dat$attr$last.neg.test
     tsincelntst[is.na(tsincelntst)] <- at - dat$attr$arrival.time[is.na(tsincelntst)]
 
-    tst.B.nprep <- which(active == 1 & race == "B" & tt.traj != "NN" &
+    tst.B.nprep.msm <- which(active == 1 & race == "B" & asmm == 0 & tt.traj != "NN" &
                            (diag.status == 0 | is.na(diag.status)) &
                            tsincelntst >= (mean.test.B.int))
-    tst.B.prep <- which(active == 1 & race == "B" & tt.traj != "NN" &
+    tst.B.prep.msm <- which(active == 1 & race == "B" & asmm == 0 & tt.traj != "NN" &
                           (diag.status == 0 | is.na(diag.status)) &
                           prepStat == 1 & tsincelntst >= prep.tst.int)
-    tst.B <- c(tst.B.nprep, tst.B.prep)
+    tst.B.msm <- c(tst.B.nprep.msm, tst.B.prep.msm)
 
-    tst.W.nprep <- which(active == 1 & race == "W" & tt.traj != "NN" &
+    tst.W.nprep.msm <- which(active == 1 & race == "W" & asmm == 0 & tt.traj != "NN" &
                            (diag.status == 0 | is.na(diag.status)) &
                            tsincelntst >= (mean.test.W.int))
-    tst.W.prep <- which(active == 1 & race == "W" & tt.traj != "NN" &
+    tst.W.prep.msm <- which(active == 1 & race == "W" & asmm == 0 & tt.traj != "NN" &
                           (diag.status == 0 | is.na(diag.status)) &
                           prepStat == 1 & tsincelntst >= prep.tst.int)
-    tst.W <- c(tst.W.nprep, tst.W.prep)
+    tst.W.msm <- c(tst.W.nprep.msm, tst.W.prep.msm)
+    
+    # Time since last neg test ASMM
+    tsincelntst <- at - dat$attr$last.neg.test
+    tsincelntst[is.na(tsincelntst)] <- at - dat$attr$arrival.time[is.na(tsincelntst)]
+    
+    tst.B.nprep.asmm <- which(active == 1 & race == "B" & asmm == 1 & tt.traj != "NN" &
+                           (diag.status == 0 | is.na(diag.status)) &
+                           tsincelntst >= (mean.test.B.int.asmm))
+    tst.B.prep.asmm <- which(active == 1 & race == "B" & asmm == 1 & tt.traj != "NN" &
+                          (diag.status == 0 | is.na(diag.status)) &
+                          prepStat == 1 & tsincelntst >= prep.tst.int)
+    tst.B.asmm <- c(tst.B.nprep.asmm, tst.B.prep.asmm)
+    
+    tst.W.nprep.asmm <- which(active == 1 & race == "W" & asmm == 1 & tt.traj != "NN" &
+                           (diag.status == 0 | is.na(diag.status)) &
+                           tsincelntst >= (mean.test.W.int.asmm))
+    tst.W.prep.asmm <- which(active == 1 & race == "W" & asmm == 1 & tt.traj != "NN" &
+                          (diag.status == 0 | is.na(diag.status)) &
+                          prepStat == 1 & tsincelntst >= prep.tst.int)
+    tst.W.asmm <- c(tst.W.nprep.asmm, tst.W.prep.asmm)
   }
 
-  tst.pos.B <- tst.B[status[tst.B] == 1 & inf.time[tst.B] <= at - twind.int]
-  tst.neg.B <- setdiff(tst.B, tst.pos.B)
+  tst.pos.B.msm <- tst.B.msm[status[tst.B.msm] == 1 & inf.time[tst.B.msm] <= at - twind.int]
+  tst.neg.B.msm <- setdiff(tst.B.msm, tst.pos.B.msm)
 
-  tst.pos.W <- tst.W[status[tst.W] == 1 & inf.time[tst.W] <= at - twind.int]
-  tst.neg.W <- setdiff(tst.W, tst.pos.W)
+  tst.pos.W.msm <- tst.W.msm[status[tst.W.msm] == 1 & inf.time[tst.W.msm] <= at - twind.int]
+  tst.neg.W.msm <- setdiff(tst.W.msm, tst.pos.W.msm)
+  
+  tst.pos.B.asmm <- tst.B.asmm[status[tst.B.asmm] == 1 & inf.time[tst.B.asmm] <= at - twind.int]
+  tst.neg.B.asmm <- setdiff(tst.B.asmm, tst.pos.B.asmm)
+  
+  tst.pos.W.asmm <- tst.W.asmm[status[tst.W.asmm] == 1 & inf.time[tst.W.asmm] <= at - twind.int]
+  tst.neg.W.asmm <- setdiff(tst.W.asmm, tst.pos.W.asmm)
 
-  tst.pos <- c(tst.pos.B, tst.pos.W)
-  tst.neg <- c(tst.neg.B, tst.neg.W)
+  tst.pos <- c(tst.pos.B.msm, tst.pos.W.msm, tst.pos.B.asmm, tst.pos.W.asmm)
+  tst.neg <- c(tst.neg.B.msm, tst.neg.W.msm, tst.neg.B.asmm, tst.neg.W.asmm)
 
 
   ## Output
@@ -96,43 +138,11 @@ test_msm <- function(dat, at) {
   dat$attr$diag.time[tst.pos] <- at
 
   ## Summary statistics
-  dat$epi$tst.W.inc[at] <- length(tst.W)
-  dat$epi$tst.B.inc[at] <- length(tst.B)
+  dat$epi$tst.W.inc.msm[at] <- length(tst.W.msm)
+  dat$epi$tst.B.inc.msm[at] <- length(tst.B.msm)
+  dat$epi$tst.W.inc.asmm[at] <- length(tst.W.asmm)
+  dat$epi$tst.B.inc.asmm[at] <- length(tst.B.asmm)
 
-
-  return(dat)
-}
-
-
-#' @title HIV Diagnosis Module
-#'
-#' @description Module function for simulating HIV diagnosis after infection,
-#'              currently based on diagnosis at treatment initiation.
-#'
-#' @inheritParams aging_het
-#'
-#' @keywords module het
-#'
-#' @export
-#'
-dx_het <- function(dat, at) {
-
-  # Variables
-  status <- dat$attr$status
-  txCD4min <- dat$attr$txCD4min
-  cd4Count <- dat$attr$cd4Count
-  dxStat <- dat$attr$dxStat
-
-  # Process
-  tested <- which(status == 1 & dxStat == 0 & cd4Count <= txCD4min)
-
-
-  # Results
-  if (length(tested) > 0) {
-    dat$attr$dxStat[tested] <- 1
-    dat$attr$txStat[tested] <- 0
-    dat$attr$dxTime[tested] <- at
-  }
 
   return(dat)
 }
