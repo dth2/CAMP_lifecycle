@@ -4,7 +4,7 @@
 #' @description Module function for simulting both general and disease-related
 #'              deaths among population members.
 #'
-#' @inheritParams aging_msm
+#' @inheritParams aging_camplc
 #'
 #' @details
 #' Deaths are divided into two categories: general deaths, for which demographic
@@ -53,7 +53,7 @@ deaths_msm <- function(dat, at) {
 
   if (length(dth.all) > 0) {
     dat$attr$active[dth.all] <- 0
-    for (i in 1:3) {
+    for (i in 1:4) {
       dat$el[[i]] <- tergmLite::delete_vertices(dat$el[[i]], dth.all)
     }
     dat$attr <- deleteAttr(dat$attr, dth.all)
