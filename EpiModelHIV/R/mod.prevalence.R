@@ -4,7 +4,7 @@
 #' @description This module calculates demographic, transmission, and clinical
 #'              statistics at each time step within the simulation.
 #'
-#' @inheritParams aging_msm
+#' @inheritParams aging_camplc
 #'
 #' @details
 #' Summary statistic calculations are of two broad forms: prevalence and
