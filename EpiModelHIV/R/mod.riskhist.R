@@ -4,7 +4,7 @@
 #' @description Module function to track the risk history of uninfected persons
 #'              for purpose of intervention targeting.
 #'
-#' @inheritParams aging_msm
+#' @inheritParams aging_camplc
 #'
 #' @keywords module msm
 #'
@@ -55,7 +55,10 @@ riskhist_msm <- function(dat, at) {
   tab.casl <- table(dat$el[[2]])
   casl.deg[as.numeric(names(tab.casl))] <- as.vector(tab.casl)
 
-  tab.inst <- table(dat$el[[3]])
+  tab.asmm <- table(dat$el[[3]])
+  asmm.deg[as.numeric(names(tab.asmm))] <- as.vector(tab.asmm)
+  
+  tab.inst <- table(dat$el[[4]])
   inst.deg[as.numeric(names(tab.inst))] <- as.vector(tab.inst)
 
 
@@ -66,7 +69,7 @@ riskhist_msm <- function(dat, at) {
                       el2$p2[el2$uai > 0]))
 
   # Monogamous partnerships: 1-sided
-  tot.deg <- main.deg + casl.deg + inst.deg
+  tot.deg <- main.deg + casl.deg + asmm.deg + inst.deg 
   uai.mono1 <- intersect(which(tot.deg == 1), uai.any)
 
   # Monogamous partnerships: 2-sided
