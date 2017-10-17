@@ -5,13 +5,15 @@
 \title{Epidemic Model Control Settings}
 \usage{
 control_msm(simno = 1, nsims = 1, ncores = 1, nsteps = 100, start = 1,
-  initialize.FUN = initialize_msm, aging.FUN = aging_msm,
-  deaths.FUN = deaths_msm, births.FUN = births_msm, test.FUN = test_msm,
-  tx.FUN = tx_msm, prep.FUN = prep_msm, progress.FUN = progress_msm,
+  initialize.FUN = initialize_camplc, aging.FUN = aging_camplc,
+  deaths.FUN = deaths_msm, births.FUN = births_camplc,
+  outdebut.FUN = out_debut_camplc, test.FUN = test_msm, tx.FUN = tx_msm,
+  prep.FUN = prep_msm, prep2.FUN = prep_adol, progress.FUN = progress_msm,
   vl.FUN = vl_msm, aiclass.FUN = NULL, roleclass.FUN = NULL,
-  resim_nets.FUN = simnet_msm, disclose.FUN = disclose_msm,
-  acts.FUN = acts_msm, condoms.FUN = condoms_msm,
-  riskhist.FUN = riskhist_msm, position.FUN = position_msm,
+  role.classtrans = roleclass_trans, resim_nets.FUN = simnet_msm,
+  disclose.FUN = disclose_msm, acts.FUN = acts_msm,
+  condoms.FUN = condoms_msm, riskhist.FUN = riskhist_msm,
+  riskhistasmm.FUN = riskhist_adol, position.FUN = position_msm,
   trans.FUN = trans_msm, prev.FUN = prevalence_msm,
   verbose.FUN = verbose_msm, save.nwstats = FALSE, save.other = c("attr",
   "temp", "riskh", "el", "p"), verbose = TRUE, verbose.int = 1, ...)
@@ -41,6 +43,8 @@ model.}
 
 \item{births.FUN}{Module function for births or entries into the population.}
 
+\item{outdebut.FUN}{Module for outing into the population and debuting as sexually available}
+
 \item{test.FUN}{Module function for diagnostic disease testing.}
 
 \item{tx.FUN}{Module function for ART initiation and adherence.}
@@ -68,6 +72,9 @@ partnerships.}
 \item{riskhist.FUN}{Module function to calculate risk history for uninfected
 persons in the population.}
 
+\item{riskhistasmm.FUN}{Module function to calculate simplified risk history for uninfected
+persons in the population.}
+
 \item{position.FUN}{Module function to simulate sexual position within acts.}
 
 \item{trans.FUN}{Module function to stochastically simulate disease transmission
@@ -91,6 +98,8 @@ if in interactive mode or text files if in batch mode.}
 progress is printed.}
 
 \item{...}{Additional arguments passed to the function.}
+
+\item{roleclasstrans.FUN}{Module function for transitioning the I,R,V distribution from asmm to MSM.}
 }
 \value{
 A list object of class \code{control_msm}, which can be passed to the
